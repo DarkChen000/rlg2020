@@ -33,7 +33,10 @@ public class ConstCode {
         FAIL_LOGIN(24,"登陆失败"),
         FAIL_REGISTER(25,"注册失败"),
         EMPTY_EMAILS(26,"邮箱不能为空"),
-        EXCEPTION_SERVER(27,"服务器异常");
+        EXCEPTION_SERVER(27,"服务器异常"),
+        DEFAULT_FAIL(28,"账号或邮箱不能为空"),
+        DEFAULT_TYPE(30,"类型不能为空"),
+        DEFAULT_EXIST(29,"账号或邮箱已存在");
 
         private int code;
         private String desc;

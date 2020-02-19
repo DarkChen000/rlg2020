@@ -15,4 +15,14 @@ public interface UserService {
     ServerResponse logout(HttpSession session,User user);
 
     ServerResponse updateInformation(User user, String email, String phone, String question, String answer);
+
+    ServerResponse checkVaild(String str, String type);
+
+    ServerResponse<User> forgetGetQuestion(String username);
+
+    ServerResponse forgetCheckAnswer(String username, String question, String answer);
+
+    ServerResponse forgetResetPassword(String username, String passwordNew, String forgetToken);
+
+    ServerResponse resetPassword(User user, String passwordOld, String passwordNew);
 }

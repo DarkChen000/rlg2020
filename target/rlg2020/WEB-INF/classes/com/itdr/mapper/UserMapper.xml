@@ -32,7 +32,6 @@
       from neuedu_user
       where username = #{param1} and password = #{param2}
     </select>
-
   <!--注册时  根据用户名查找是否已注册-->
   <select id="selectByUserName" parameterType="String" resultType="java.lang.Integer">
     select
@@ -54,6 +53,33 @@
     ip
     from neuedu_user
     where username = #{username}
+  </select>
+  <!--查询用户名或邮箱是否存在-->
+  <select id="selectByUserNameOrEmails" resultType="java.lang.Integer">
+    select
+    count(id)
+    from neuedu_user
+    where
+    <if test="type == 'username'">
+      username = #{str}
+    </if>
+    <if test="type == 'email' ">
+      email = #{str}
+    </if>
+  </select>
+<!--  查找用户是否存在  返回用户数据-->
+  <select id="selectByUsername" parameterType="String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from neuedu_user
+    where username = #{username}
+  </select>
+<!--  根据用户名和问题  查看是否答案正确-->
+  <select id="selectByUserNameAndQuestionAndAnswer" resultType="java.lang.Integer">
+    select
+    count(id)
+    from neuedu_user
+    where username = #{username} and question = #{question} and answer = #{answer}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
@@ -143,6 +169,7 @@
       </if>
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.itdr.pojo.User" >
     update neuedu_user
     <set >
@@ -152,33 +179,29 @@
       <if test="password != null" >
         password = #{password,jdbcType=VARCHAR},
       </if>
-      <if test="email != null" >
+      <if test="email != null and email != ''">
         email = #{email,jdbcType=VARCHAR},
       </if>
-      <if test="phone != null" >
+      <if test="phone != null and phone != ''">
         phone = #{phone,jdbcType=VARCHAR},
       </if>
-      <if test="question != null" >
+      <if test="question != null and question != ''">
         question = #{question,jdbcType=VARCHAR},
       </if>
-      <if test="answer != null" >
+      <if test="answer != null and answer != ''">
         answer = #{answer,jdbcType=VARCHAR},
       </if>
       <if test="role != null" >
         role = #{role,jdbcType=INTEGER},
       </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+        update_time = now(),
       <if test="ip != null" >
         ip = #{ip,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+
   <update id="updateByPrimaryKey" parameterType="com.itdr.pojo.User" >
     update neuedu_user
     set username = #{username,jdbcType=VARCHAR},
@@ -194,25 +217,21 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <!--更新已登录用户个人信息-->
-  <update id="updateInformation" parameterType="map">
+<!--  根据用户名和新密码  重置密码-->
+  <update id="updateByUserNameAndPassWord">
     update neuedu_user
-    <set >
-      <if test="email != null" >
-        email = #{param2},
-      </if>
-      <if test="phone != null" >
-        phone = #{param3},
-      </if>
-      <if test="question != null" >
-        question = #{param4},
-      </if>
-      <if test="answer != null" >
-        answer = #{param5},
-      </if>
-    update_time = now(),
-    </set>
-    where username = #{param1}
+    set
+      password = #{passwordNew,jdbcType=VARCHAR},
+      update_time = now()
+    where username = #{username}
+  </update>
+<!--  登陆状态重置密码  根据旧密码和用户名-->
+  <update id="updateByUserNameAndPasswordOldAndPassWordNew">
+    update neuedu_user
+    set
+      password = #{passwordNew,jdbcType=VARCHAR},
+      update_time = now()
+    where username = #{username} and password = #{passwordOld}
   </update>
 
 </mapper>

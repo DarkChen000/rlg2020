@@ -1,6 +1,7 @@
 package com.itdr.mapper;
 
 import com.itdr.pojo.User;
+import org.apache.ibatis.annotations.Param;
 
 public interface UserMapper {
     int deleteByPrimaryKey(Integer id);
@@ -23,5 +24,14 @@ public interface UserMapper {
 
     User getInformation(String username);
 
-    int updateInformation(String username, String email, String phone, String question, String answer);
+    int selectByUserNameOrEmails(@Param("str") String str,@Param("type") String type);
+
+    User selectByUsername(String username);
+
+    int selectByUserNameAndQuestionAndAnswer(@Param("username") String username, @Param("question")String question, @Param("answer")String answer);
+
+    int updateByUserNameAndPassWord(@Param("username")String username, @Param("passwordNew")String passwordNew);
+
+    int updateByUserNameAndPasswordOldAndPassWordNew(@Param("username")String username,  @Param("passwordOld")String passwordOld,  @Param("passwordNew")String passwordNew);
+
 }

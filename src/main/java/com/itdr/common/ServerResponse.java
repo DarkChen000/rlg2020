@@ -55,9 +55,13 @@ public class ServerResponse<T> implements Serializable {
         return new ServerResponse(ConstCode.DEFAULT_SUCCESS,data);
     }
 
+    public static <T> ServerResponse successRS(Integer status,T data) {
+        return new ServerResponse(status,data);
+    }
+
     //    成功的时候传入状态码、数据、信息
-    public static <T> ServerResponse successRS(T data, String msg) {
-        return new ServerResponse(ConstCode.DEFAULT_SUCCESS,data, msg);
+    public static <T> ServerResponse successRS(Integer status,T data, String msg) {
+        return new ServerResponse(status,data, msg);
     }
 
     public static <T> ServerResponse defeatedRS(Integer errorCode, String errorMessage) {
