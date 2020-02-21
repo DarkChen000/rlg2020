@@ -19,12 +19,36 @@
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
 
+<!--  代码片段-->
+  <sql id="Base_Column_List">
+    id,category_id,name,subtitle,main_image,price,stock,status,is_new,is_hot,is_banner,sub_images,detail,
+    create_time,update_time
+  </sql>
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from neuedu_product
     where id = #{id,jdbcType=INTEGER}
   </delete>
 
-  <update id="updateByPrimaryKey" parameterType="com.itdr.pojo.Product" >
+<!--  根据id查询商品详情-->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from neuedu_product
+    where id = #{productId,jdbcType=INTEGER}
+  </select>
+
+<!--  模糊查询-->
+    <select id="selectByName" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from neuedu_product
+      where name like #{word,jdbcType=INTEGER}
+    </select>
+
+
+    <update id="updateByPrimaryKey" parameterType="com.itdr.pojo.Product" >
     update neuedu_product
     set category_id = #{categoryId,jdbcType=INTEGER},
       name = #{name,jdbcType=VARCHAR},

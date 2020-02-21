@@ -6,6 +6,7 @@ import com.itdr.config.TokenCache;
 import com.itdr.mapper.UserMapper;
 import com.itdr.pojo.User;
 import com.itdr.service.UserService;
+import com.itdr.utils.MD5Util;
 import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,8 +34,11 @@ public class UserServiceImpl implements UserService {
                     (ConstCode.UserEnum.EMPTY_PASSWORD.getCode(), ConstCode.UserEnum.EMPTY_PASSWORD.getDesc());
         }
 
+        // MD5加密
+        String md5Code = MD5Util.getMD5Code(password);
+
         // 查询用户
-        User u = userMapper.selectByUserNameAndPassWord(username,password);
+        User u = userMapper.selectByUserNameAndPassWord(username,md5Code);
         if (u == null){
             return ServerResponse.defeatedRS
                     (ConstCode.UserEnum.FAIL_LOGIN.getCode(),ConstCode.UserEnum.FAIL_LOGIN.getDesc());
@@ -66,6 +70,9 @@ public class UserServiceImpl implements UserService {
             return ServerResponse.defeatedRS
                     (ConstCode.UserEnum.EMPTY_ANSWER.getCode(), ConstCode.UserEnum.EMPTY_PASSWORD.getDesc());
         }
+
+        // MD5加密
+        u.setPassword(MD5Util.getMD5Code(u.getPassword()));
 
         // 查找用户名是否存在
         int i = userMapper.selectByUserName(u.getUsername());
@@ -211,6 +218,9 @@ public class UserServiceImpl implements UserService {
                     (ConstCode.UserEnum.UNLAWFULNESS_TOKEN.getCode(),ConstCode.UserEnum.UNLAWFULNESS_TOKEN.getDesc());
         }
 
+        // MD5加密
+        String md5Code = MD5Util.getMD5Code(passwordNew);
+
         // 判断缓存中的token
         String token = TokenCache.get("token_"+username);
         if (token == null || token.equals("")){
@@ -222,7 +232,8 @@ public class UserServiceImpl implements UserService {
                     (ConstCode.UserEnum.UNLAWFULNESS_TOKEN.getCode(),ConstCode.UserEnum.UNLAWFULNESS_TOKEN.getDesc());
         }
         // 重置密码
-        int i =userMapper.updateByUserNameAndPassWord(username,passwordNew);
+        int i =userMapper.updateByUserNameAndPassWord(username,md5Code);
+
         if (i <= 0){
             return ServerResponse.defeatedRS
                     (ConstCode.UserEnum.DEFEACTED_PASSWORDNEW.getCode(),ConstCode.UserEnum.DEFEACTED_PASSWORDNEW.getDesc());
@@ -243,8 +254,13 @@ public class UserServiceImpl implements UserService {
                     (ConstCode.UserEnum.EMPTY_PASSWORD.getCode(),ConstCode.UserEnum.EMPTY_PASSWORD.getDesc());
         }
 
+        // MD5加密
+        String md5Code = MD5Util.getMD5Code(passwordOld);
+        String md5Code1 = MD5Util.getMD5Code(passwordNew);
+
         // 更新密码
-        int i = userMapper.updateByUserNameAndPasswordOldAndPassWordNew(user.getUsername(),passwordOld,passwordNew);
+        int i = userMapper.updateByUserNameAndPasswordOldAndPassWordNew(user.getUsername(),md5Code,md5Code1);
+
         if (i <= 0){
             return ServerResponse.defeatedRS
                     (ConstCode.UserEnum.DEFEACTED_PASSWORDNEW.getCode(),ConstCode.UserEnum.DEFEACTED_PASSWORDNEW.getDesc());

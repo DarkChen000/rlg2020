@@ -1,4 +1,4 @@
-package com.itdr.pojo.bo;
+package com.itdr.pojo.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

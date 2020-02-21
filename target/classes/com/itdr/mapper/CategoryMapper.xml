@@ -19,6 +19,17 @@
     from neuedu_category
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+
+<!--  根据父ID查询直接子类-->
+  <select id="selectByParentID" resultType="com.itdr.pojo.Category">
+    select
+    <include refid="Base_Column_List" />
+    from neuedu_category
+    where parent_id = #{sid,jdbcType=INTEGER}
+  </select>
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from neuedu_category
     where id = #{id,jdbcType=INTEGER}

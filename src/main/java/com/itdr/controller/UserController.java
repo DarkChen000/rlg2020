@@ -4,9 +4,9 @@ package com.itdr.controller;
 import com.itdr.common.ServerResponse;
 import com.itdr.config.ConstCode;
 import com.itdr.pojo.User;
-import com.itdr.pojo.bo.UserVO;
+import com.itdr.pojo.vo.UserVO;
 import com.itdr.service.UserService;
-import com.itdr.utils.ObjectToUserVOUtil;
+import com.itdr.utils.ObjectToVOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -84,7 +84,7 @@ public class UserController {
             return ServerResponse.defeatedRS(ConstCode.UserEnum.NO_LOGIN.getDesc());
         }
         // 已登录返回封装类信息
-        UserVO userVO = ObjectToUserVOUtil.UserToUserVO(user);
+        UserVO userVO = ObjectToVOUtil.UserToUserVO(user);
         return ServerResponse.successRS(userVO);
     }
 

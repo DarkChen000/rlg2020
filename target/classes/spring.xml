@@ -22,7 +22,7 @@
     <bean id="driverManagerDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <!--属性注入-->
         <property name="driverClassName" value="${jdbc.driverClassName}"/>
-        <property name="url" value="${jdbc.url}"></property>
+        <property name="url" value="${jdbc.url}?characterEncoding=utf-8"></property>
         <property name="username" value="${jdbc.username}"></property>
         <property name="password" value="${jdbc.password}"></property>
     </bean>
@@ -35,6 +35,14 @@
         <property name="configLocation" value="classpath:mb.xml" />
         <!-- 配置数据源 -->
         <property name="dataSource" ref="driverManagerDataSource" />
+        <!-- 分页插件 -->
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <property name="properties" value="mysql"/>
+                </bean>
+            </array>
+        </property>
     </bean>
 
     <!-- Mapper代理的方式开发方式二，扫描包方式配置代理 -->
