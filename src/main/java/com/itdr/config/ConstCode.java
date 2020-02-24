@@ -93,4 +93,39 @@ public class ConstCode {
             this.desc = desc;
         }
     }
+
+    public enum CartEnum{
+
+        EMPTY_CART(1, "购物车没有更多商品"),
+        NO_PRODUCT(2,"没有此商品"),
+        UNLAWFUINESS_PARAM(3, "非法参数"),
+        EMPTY_FOUND(4,"商品不存在"),
+        OUT_STOCK(5,"超出库存数量"),
+        FAILED_INSERT(6,"添加商品失败"),
+        FAILED_UPDATE(7,"更新商品数量失败");
+
+        private int code;
+        private String desc;
+
+        private CartEnum(int code, String desc) {
+            this.code = code;
+            this.desc = desc;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public void setDesc(String desc) {
+            this.desc = desc;
+        }
+    }
 }

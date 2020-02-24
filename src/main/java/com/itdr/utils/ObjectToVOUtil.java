@@ -1,9 +1,15 @@
 package com.itdr.utils;
 
+import com.itdr.pojo.Cart;
 import com.itdr.pojo.Product;
 import com.itdr.pojo.User;
+import com.itdr.pojo.vo.CartProductVO;
+import com.itdr.pojo.vo.CartVO;
 import com.itdr.pojo.vo.ProductVO;
 import com.itdr.pojo.vo.UserVO;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public class ObjectToVOUtil {
 
@@ -46,5 +52,53 @@ public class ObjectToVOUtil {
         pv.setSubImages(product.getSubImages());
         pv.setPrice(product.getPrice());
         return pv;
+    }
+
+    /**
+     * 购物车和商品数据封装
+     * @param cart
+     * @param product
+     * @return
+     */
+    public static CartProductVO CartAndProductToVO(Cart cart,Product product){
+        CartProductVO cvo = new CartProductVO();
+        cvo.setId(cart.getId());
+        cvo.setUserId(cart.getUserId());
+        cvo.setProductId(cart.getProductId());
+        cvo.setQuantity(cart.getQuantity());
+        cvo.setProductName(product.getName());
+        cvo.setProductSubtitle(product.getSubtitle());
+        cvo.setProductMainImage(product.getMainImage());
+        cvo.setProductPrice(product.getPrice());
+        cvo.setProductStatus(product.getStatus());
+        cvo.setProductStock(product.getStock());
+        // 一条购物信息的总价
+        BigDecimal tp = BigDecimalUtil.mul(cart.getQuantity(),product.getPrice().doubleValue());
+        cvo.setProductTotalPrice(tp);
+        // 判断商品是否被选中
+        cvo.setProductChecked(cart.getChecked());
+        // 购买的商品数量是否超过库存
+        String limitQuantity = "SUCCESS";
+        if (cart.getQuantity() > product.getStock()){
+            limitQuantity = "FAILED";
+        }
+        cvo.setLimitQuantity(limitQuantity);
+        return cvo;
+    }
+
+    /**
+     * 购物车二次封装
+     * @param cartProductVOList
+     * @return
+     */
+    public static CartVO toCartVO(List<CartProductVO> cartProductVOList,boolean bol,BigDecimal cartTotalPrice){
+        CartVO cvo = new CartVO();
+        // 购物车商品数据
+        cvo.setCartProductVOList(cartProductVOList);
+        // 购物车是否全选
+        cvo.setAllChecked(bol);
+        // 购物车总价
+        cvo.setCartTotalPrice(cartTotalPrice);
+        return cvo;
     }
 }

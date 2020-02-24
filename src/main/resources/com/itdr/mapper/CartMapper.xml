@@ -19,7 +19,25 @@
     from neuedu_cart
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+
+<!--根据登录用户ID查询其购物车信息-->
+    <select id="selectByUserID" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from neuedu_cart
+      where user_id = #{id,jdbcType=INTEGER}
+    </select>
+
+<!--  根据用户id和商品id 查询购物车中是否有此商品-->
+    <select id="selectByUserIDAndProductID" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from neuedu_cart
+      where user_id = #{userID,jdbcType=INTEGER} and product_id = #{productID,jdbcType=INTEGER}
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from neuedu_cart
     where id = #{id,jdbcType=INTEGER}
   </delete>
@@ -80,6 +98,17 @@
       </if>
     </trim>
   </insert>
+
+<!--  向购物车中插入新商品数据-->
+  <insert id="insertProduct" parameterType="com.itdr.pojo.Cart">
+    insert into neuedu_cart (id, user_id, product_id,
+      quantity, checked, create_time,
+      update_time)
+    values (null, #{userId,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER},
+      #{quantity,jdbcType=INTEGER}, 1, now(),
+      now())
+  </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.itdr.pojo.Cart" >
     update neuedu_cart
     <set >
@@ -104,14 +133,13 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+
   <update id="updateByPrimaryKey" parameterType="com.itdr.pojo.Cart" >
     update neuedu_cart
-    set user_id = #{userId,jdbcType=INTEGER},
-      product_id = #{productId,jdbcType=INTEGER},
+    set
       quantity = #{quantity,jdbcType=INTEGER},
-      checked = #{checked,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
 </mapper>
