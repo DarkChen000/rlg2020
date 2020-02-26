@@ -36,11 +36,32 @@
       where user_id = #{userID,jdbcType=INTEGER} and product_id = #{productID,jdbcType=INTEGER}
     </select>
 
+<!--  查找是否又选中商品-->
+  <select id="selectByChecked" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from neuedu_cart
+    where checked = 1 and user_id = #{userID}
+  </select>
 
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from neuedu_cart
     where id = #{id,jdbcType=INTEGER}
   </delete>
+
+<!--  根据用户ID和商品ID删除商品-->
+  <delete id="deleteByProductIDAndUserID">
+    delete from neuedu_cart
+    where user_id = #{userID,jdbcType=INTEGER} and product_id = #{pid}
+  </delete>
+
+<!--  删除所有被选中的商品-->
+  <delete id="deleteByChecked">
+    delete from neuedu_cart
+    where user_id = #{id,jdbcType=INTEGER} and checked = 1
+  </delete>
+
   <insert id="insert" parameterType="com.itdr.pojo.Cart" >
     insert into neuedu_cart (id, user_id, product_id, 
       quantity, checked, create_time, 
@@ -140,6 +161,20 @@
       quantity = #{quantity,jdbcType=INTEGER},
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+  <update id="updateByUserIDAndProductID">
+    update neuedu_cart
+    set
+      checked = #{type},
+      update_time = now()
+    <where>
+      <if test="pid != null">
+        product_id = #{pid,jdbcType=INTEGER}
+      </if>
+      and user_id = #{userID}
+    </where>
   </update>
 
 </mapper>

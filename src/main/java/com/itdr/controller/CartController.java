@@ -45,39 +45,92 @@ public class CartController {
     @RequestMapping("add.do")
     public ServerResponse add(Integer productID,
                               @RequestParam(value = "count",required = false,defaultValue = "1")Integer count,
+                              @RequestParam(value = "type",required = false,defaultValue = "100")Integer type,
                               HttpSession session){
         // 判断用户是否登录
         User user = (User) session.getAttribute("user");
         if (user == null){
             return ServerResponse.defeatedRS(ConstCode.UserEnum.NO_LOGIN.getDesc());
         }
-        return cartsService.add(productID,count,user);
+        return cartsService.add(productID,count,type,user);
     }
 
     /**
      * 移除购物车某个商品
-     * @param productIDs
+     * @param productID
      * @param session
      * @return
      */
     @RequestMapping("delete_product.do")
-    public ServerResponse deleteProduct(String productIDs, HttpSession session){
+    public ServerResponse deleteProduct(Integer productID, HttpSession session){
         // 判断用户是否登录
         User user = (User) session.getAttribute("user");
         if (user == null){
             return ServerResponse.defeatedRS(ConstCode.UserEnum.NO_LOGIN.getDesc());
         }
-        return cartsService.deleteProduct(productIDs,user);
+        return cartsService.deleteProduct(productID,user);
+    }
+
+    /**
+     * 移除购物车中所有被选中的商品
+     * @param session
+     * @return
+     */
+    @RequestMapping("delete_products.do")
+    public ServerResponse deleteProducts(HttpSession session){
+        // 判断用户是否登录
+        User user = (User) session.getAttribute("user");
+        if (user == null){
+            return ServerResponse.defeatedRS(ConstCode.UserEnum.NO_LOGIN.getDesc());
+        }
+        return cartsService.deleteProducts(user);
+    }
+
+    /**
+     * 更新购物车某个商品的数量
+     * @param productID
+     * @param type
+     * @param count
+     * @param session
+     * @return
+     */
+    @RequestMapping("update.do")
+    public ServerResponse update(Integer productID,
+                                 @RequestParam(value = "type",required = false,defaultValue = "100")Integer type,
+                                 Integer count, HttpSession session){
+        // 判断用户是否登录
+        User user = (User) session.getAttribute("user");
+        if (user == null){
+            return ServerResponse.defeatedRS(ConstCode.UserEnum.NO_LOGIN.getDesc());
+        }
+        return cartsService.update(productID,count,type,user);
+    }
+
+    /**
+     * 查询购物车中的商品数量
+     * @param session
+     * @return
+     */
+    @RequestMapping("get_cart_product_count.do")
+    public ServerResponse getCartProductCount(HttpSession session){
+        // 判断用户是否登录
+        User user = (User) session.getAttribute("user");
+        if (user == null){
+            return ServerResponse.defeatedRS(ConstCode.UserEnum.NO_LOGIN.getDesc());
+        }
+        return cartsService.getCartProductCount(user);
     }
 
 
-    @RequestMapping("update.do")
-    public ServerResponse update(Integer productID, Integer count, HttpSession session){
+    @RequestMapping("checked.do")
+    public ServerResponse checked(Integer productID,
+                                  @RequestParam(value = "type",required = false,defaultValue = "0")Integer type,
+                                  HttpSession session){
         // 判断用户是否登录
         User user = (User) session.getAttribute("user");
         if (user == null){
             return ServerResponse.defeatedRS(ConstCode.UserEnum.NO_LOGIN.getDesc());
         }
-        return cartsService.update(productID,count,user);
+        return cartsService.checked(productID,type,user);
     }
 }

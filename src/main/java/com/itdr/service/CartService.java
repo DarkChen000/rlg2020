@@ -7,9 +7,15 @@ public interface CartService {
     ServerResponse list(User user);
 
 
-    ServerResponse add(Integer productID, Integer count, User user);
+    ServerResponse add(Integer productID, Integer count, Integer type ,User user);
 
-    ServerResponse deleteProduct(String productIDs, User user);
+    ServerResponse deleteProduct(Integer productID, User user);
 
-    ServerResponse update(Integer productID, Integer count, User user);
+    ServerResponse update(Integer productID, Integer count,Integer type, User user);
+
+    ServerResponse deleteProducts(User user);
+
+    ServerResponse getCartProductCount(User user);
+
+    ServerResponse checked(Integer productID, Integer type,User user);
 }

@@ -102,7 +102,12 @@ public class ConstCode {
         EMPTY_FOUND(4,"商品不存在"),
         OUT_STOCK(5,"超出库存数量"),
         FAILED_INSERT(6,"添加商品失败"),
-        FAILED_UPDATE(7,"更新商品数量失败");
+        FAILED_UPDATE(7,"更新商品数量失败"),
+        FAILED_DELETE(8,"删除商品失败"),
+        NO_CHECKED(9,"没有选中任何商品"),
+        CART_TYPE(100,"类型"),
+        CART_TYPE2(101,"类型"),
+        FAILED_CART_TYPE(10,"添加类型参数错误");
 
         private int code;
         private String desc;

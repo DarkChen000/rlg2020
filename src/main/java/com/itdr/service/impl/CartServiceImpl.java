@@ -97,7 +97,7 @@ public class CartServiceImpl implements CartService {
 
     // 添加商品
     @Override
-    public ServerResponse add(Integer productID, Integer count, User user) {
+    public ServerResponse add(Integer productID, Integer count,Integer type, User user) {
         // 参数合法判断
         if (StringUtils.isEmpty(productID) || productID < 0){
             return ServerResponse.defeatedRS
@@ -141,8 +141,15 @@ public class CartServiceImpl implements CartService {
                         (ConstCode.CartEnum.FAILED_INSERT.getCode(),ConstCode.CartEnum.FAILED_INSERT.getDesc());
             }
         }else {
-            // 如果有，更新商品数量
-            c.setQuantity(count);
+            // 如果有，更新商品数量,根据type判断要执行的更新方式
+            if (type == ConstCode.CartEnum.CART_TYPE.getCode()){
+                c.setQuantity(count + cart.getQuantity());
+            }else if (type == ConstCode.CartEnum.CART_TYPE2.getCode()){
+                c.setQuantity(count);
+            }else {
+                return ServerResponse.defeatedRS
+                        (ConstCode.CartEnum.FAILED_CART_TYPE.getCode(),ConstCode.CartEnum.FAILED_CART_TYPE.getDesc());
+            }
             int insert2 = cartMapper.updateByPrimaryKey(c);
             // 更新失败
             if (insert2 <= 0){
@@ -161,16 +168,55 @@ public class CartServiceImpl implements CartService {
         return ServerResponse.successRS(cartVO);
     }
 
-    // 移除商品
+    // 移除购物车中某一个商品
     @Override
-    public ServerResponse deleteProduct(String productIDs, User user) {
+    public ServerResponse deleteProduct(Integer productID, User user) {
         // 参数合法判断
-        if (StringUtils.isEmpty(productIDs)){
+        if (StringUtils.isEmpty(productID)){
             return ServerResponse.defeatedRS
                     (ConstCode.CartEnum.UNLAWFUINESS_PARAM.getCode(),ConstCode.CartEnum.UNLAWFUINESS_PARAM.getDesc());
         }
 
+        // 查询购物车中是否有此商品
+        Cart c = cartMapper.selectByUserIDAndProductID(user.getId(),productID);
+        if (c == null){
+            return ServerResponse.defeatedRS
+                    (ConstCode.CartEnum.EMPTY_FOUND.getCode(),ConstCode.CartEnum.EMPTY_FOUND.getDesc());
+        }
 
+        // 删除此商品
+        int i = cartMapper.deleteByProductIDAndUserID(user.getId(),productID);
+        if (i <= 0){
+            return ServerResponse.defeatedRS
+                    (ConstCode.CartEnum.FAILED_DELETE.getCode(),ConstCode.CartEnum.FAILED_DELETE.getDesc());
+        }
+
+        ServerResponse<List<Cart>> cartList = getUserCart(user);
+        if (! cartList.isSuccess()){
+            return cartList;
+        }
+
+        // 获取一个封装对象
+        CartVO cartVO = getCartVO(cartList.getData());
+        return ServerResponse.successRS(cartVO);
+    }
+
+    // 移除购物车所有被选中商品
+    @Override
+    public ServerResponse deleteProducts(User user) {
+        // 查询是否有选中商品
+        List<Cart> c = cartMapper.selectByChecked(user.getId());
+        if (c.size() == 0){
+            return ServerResponse.defeatedRS
+                    (ConstCode.CartEnum.NO_CHECKED.getCode(),ConstCode.CartEnum.NO_CHECKED.getDesc());
+        }
+
+        // 删除所有被选中的商品
+        int i = cartMapper.deleteByChecked(user.getId());
+        if (i <= 0){
+            return ServerResponse.defeatedRS
+                    (ConstCode.CartEnum.FAILED_DELETE.getCode(),ConstCode.CartEnum.FAILED_DELETE.getDesc());
+        }
 
         ServerResponse<List<Cart>> cartList = getUserCart(user);
         if (! cartList.isSuccess()){
@@ -184,17 +230,93 @@ public class CartServiceImpl implements CartService {
 
     // 更新商品
     @Override
-    public ServerResponse update(Integer productID, Integer count, User user) {
+    public ServerResponse update(Integer productID, Integer count,Integer type, User user) {
+        // 商品详情页面使用数值加减器改变
+
         // 参数合法判断
-        if (StringUtils.isEmpty(productID) || productID < 0){
+        if (StringUtils.isEmpty(productID)){
             return ServerResponse.defeatedRS
                     (ConstCode.CartEnum.UNLAWFUINESS_PARAM.getCode(),ConstCode.CartEnum.UNLAWFUINESS_PARAM.getDesc());
         }
-        if (StringUtils.isEmpty(count) || count < 0){
+        if (StringUtils.isEmpty(count)){
             return ServerResponse.defeatedRS
                     (ConstCode.CartEnum.UNLAWFUINESS_PARAM.getCode(),ConstCode.CartEnum.UNLAWFUINESS_PARAM.getDesc());
         }
 
+        // 查找商品
+        Product product = productMapper.selectByPrimaryKey(productID);
+        // 判断要更新的商品是否在售
+        if (product == null || product.getStatus() != 1){
+            return ServerResponse.defeatedRS
+                    (ConstCode.CartEnum.EMPTY_FOUND.getCode(),ConstCode.CartEnum.EMPTY_FOUND.getDesc());
+        }
+
+        // 向购物车中添加商品或更新商品数据
+        // 查询购物车中是否有此商品
+        Cart cart = cartMapper.selectByUserIDAndProductID(user.getId(),productID);
+
+        // 根据type类型判断执行的更新方式
+        if (type == ConstCode.CartEnum.CART_TYPE.getCode()){
+            cart.setQuantity(count + cart.getQuantity());
+        }else if (type == ConstCode.CartEnum.CART_TYPE2.getCode()){
+            cart.setQuantity(count);
+        }else {
+            return ServerResponse.defeatedRS
+                    (ConstCode.CartEnum.FAILED_CART_TYPE.getCode(),ConstCode.CartEnum.FAILED_CART_TYPE.getDesc());
+        }
+        int insert2 = cartMapper.updateByPrimaryKey(cart);
+        // 更新失败
+        if (insert2 <= 0){
+            return ServerResponse.defeatedRS
+                    (ConstCode.CartEnum.FAILED_UPDATE.getCode(),ConstCode.CartEnum.FAILED_UPDATE.getDesc());
+        }
+
+
+        ServerResponse<List<Cart>> cartList = getUserCart(user);
+        if (! cartList.isSuccess()){
+            return cartList;
+        }
+
+        // 获取一个封装对象
+        CartVO cartVO = getCartVO(cartList.getData());
+        return ServerResponse.successRS(cartVO);
+    }
+
+    // 查询在购物车里的商品数量
+    @Override
+    public ServerResponse getCartProductCount(User user) {
+        List<Cart> cartList = cartMapper.selectByUserID(user.getId());
+        Integer num = 0;
+        for (Cart cart : cartList) {
+            num += cart.getQuantity();
+        }
+
+        return ServerResponse.successRS(num);
+    }
+
+    // 商品选中、全选等
+    @Override
+    public ServerResponse checked(Integer productID, Integer type,User user) {
+        // 参数合法判断
+        if (productID != null && productID < 0){
+            return ServerResponse.defeatedRS
+                    (ConstCode.CartEnum.UNLAWFUINESS_PARAM.getCode(),ConstCode.CartEnum.UNLAWFUINESS_PARAM.getDesc());
+        }
+        if (type == null){
+            return ServerResponse.defeatedRS
+                    (ConstCode.CartEnum.UNLAWFUINESS_PARAM.getCode(),ConstCode.CartEnum.UNLAWFUINESS_PARAM.getDesc());
+        }
+        if (!(type == 0 || type == 1)){
+            return ServerResponse.defeatedRS
+                    (ConstCode.CartEnum.UNLAWFUINESS_PARAM.getCode(),ConstCode.CartEnum.UNLAWFUINESS_PARAM.getDesc());
+        }
+
+        // 选中或取消选中一个商品
+        int i = cartMapper.updateByUserIDAndProductID(user.getId(),productID,type);
+        if (i <= 0){
+            return ServerResponse.defeatedRS
+                    (ConstCode.CartEnum.FAILED_UPDATE.getCode(),ConstCode.CartEnum.FAILED_UPDATE.getDesc());
+        }
 
         ServerResponse<List<Cart>> cartList = getUserCart(user);
         if (! cartList.isSuccess()){
