@@ -3,6 +3,7 @@ package com.itdr.utils;
 import com.alipay.api.domain.ExtendParams;
 import com.alipay.api.domain.GoodsDetail;
 import com.itdr.config.pay.BizContent;
+import com.itdr.config.pay.Configs;
 import com.itdr.config.pay.PGoodsDetail;
 import com.itdr.pojo.*;
 import com.itdr.pojo.vo.CartProductVO;
@@ -182,7 +183,7 @@ public class ObjectToVOUtil {
         biz.setExtend_params(extendParams);
         biz.setTimeout_express(timeoutExpress);
         //支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
-        //biz.setNotify_url(Configs.getNotifyUrl_test()+"portal/order/alipay_callback.do");
+        biz.setNotify_url(Configs.getNotifyUrl_test());
         biz.setGoods_detail(goodsDetailList);
 
         return biz;

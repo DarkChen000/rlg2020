@@ -64,10 +64,10 @@ public class Configs {
                 cancelDuration = configs.getLong("cancel_duration");
                 heartbeatDelay = configs.getLong("heartbeat_delay");
                 heartbeatDuration = configs.getLong("heartbeat_duration");
-                notifyUrl_test= configs.getString("NotifyUrl_TEST");
-                notifyUrl_realy=configs.getString("NotifyUrl_REALY");
-                savecode_test=configs.getString("save_test");
-                savecode_realy=configs.getString("save_realy");
+                notifyUrl_test= configs.getString("notifyUrl_dev");
+                notifyUrl_realy=configs.getString("notifyUrl_prop");
+                savecode_test=configs.getString("save_dev");
+                savecode_realy=configs.getString("save_prop");
 
                 log.info("配置文件名: " + filePath);
                 log.info(description());
