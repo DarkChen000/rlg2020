@@ -25,7 +25,17 @@
     from neuedu_shipping
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+
+<!--  根据用户id查询收获地址-->
+    <select id="selectByUserID" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from neuedu_shipping
+      where user_id = #{uid}
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from neuedu_shipping
     where id = #{id,jdbcType=INTEGER}
   </delete>

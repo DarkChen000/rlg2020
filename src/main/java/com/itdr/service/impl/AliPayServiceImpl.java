@@ -124,7 +124,6 @@ public class AliPayServiceImpl implements AliPayService {
     public ServerResponse alipayCallback(Map<String, String> map) {
         ServerResponse sr = null;
 
-        System.out.println("业务层");
         //step1:获取ordrNo
         Long orderNo = Long.parseLong(map.get("out_trade_no"));
         //step2:获取流水号
@@ -179,5 +178,28 @@ public class AliPayServiceImpl implements AliPayService {
         //支付信息保存失败返回结果
         sr = ServerResponse.defeatedRS("SUCCESS");
         return sr;
+    }
+
+    @Override
+    public ServerResponse queryOrderPayStatus(User user, Long orderNo) {
+        // 参数非空判断
+        if (orderNo == null || orderNo < 0){
+            return ServerResponse.defeatedRS
+                    (ConstCode.AliPayEnum.WRONG_ORDERNO.getCode(),ConstCode.AliPayEnum.WRONG_ORDERNO.getDesc());
+        }
+
+        // 根据用户id和订单号查询订单是否存在
+        Order order = orderMapper.selectByOrderNumAndUserID(orderNo, user.getId());
+        if (order == null){
+            return ServerResponse.defeatedRS
+                    (ConstCode.AliPayEnum.WRONG_ORDERNO.getCode(),ConstCode.AliPayEnum.WRONG_ORDERNO.getDesc());
+        }
+
+        // 有订单的情况下判断是否支付
+        if (order.getStatus() != 20){
+            return ServerResponse.successRS(false);
+        }
+
+        return ServerResponse.successRS(true);
     }
 }

@@ -140,12 +140,43 @@ public class ConstCode {
         EMPTY_ORDER(2,"订单不存在"),
         FAILED_ORDER_USER(3,"订单与用户不匹配"),
         FAIDED_ORDER(4,"下单失败"),
-        FAIDED_SIGNED(5,"验签失败");
+        FAIDED_SIGNED(5,"验签失败"),
+        ORDER_NOT_EXIST(6,"该用户并没有该订单，查询无效"),
+        WRONG_ORDERNO(7,"非法的订单参数");
 
         private int code;
         private String desc;
 
         private AliPayEnum(int code, String desc) {
+            this.code = code;
+            this.desc = desc;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public void setDesc(String desc) {
+            this.desc = desc;
+        }
+    }
+
+    public enum ShippingEnum{
+
+        EMPTY_ADDRESS(1, "该用户尚未添加收获地址");
+
+        private int code;
+        private String desc;
+
+        private ShippingEnum(int code, String desc) {
             this.code = code;
             this.desc = desc;
         }

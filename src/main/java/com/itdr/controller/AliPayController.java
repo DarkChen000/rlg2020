@@ -28,6 +28,12 @@ public class AliPayController {
     @Autowired
     AliPayService aliPayService;
 
+    /**
+     * 用户支付
+     * @param session
+     * @param orderNum
+     * @return
+     */
     @RequestMapping("pay.do")
     public ServerResponse pay(HttpSession session,Long orderNum){
         // 判断用户是否登录
@@ -39,11 +45,16 @@ public class AliPayController {
         return aliPayService.pay(user,orderNum);
     }
 
+    /**
+     * 支付宝回调
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping("pay_callback.do")
     public String payCallback(HttpServletRequest request, HttpServletResponse response){
         ServerResponse sr = null;
 
-        System.out.println("控制层");
         //获取支付宝返回的参数，返回一个map集合
         Map<String, String[]> map = request.getParameterMap();
 
@@ -97,5 +108,22 @@ public class AliPayController {
         } else {
             return "FAILED";
         }
+    }
+
+    /**
+     * 查询订单支付状态
+     * @param session
+     * @param orderNo
+     * @return
+     */
+    @RequestMapping("query_order_pay_status.do")
+    public ServerResponse queryOrderPayStatus(HttpSession session,Long orderNo){
+        // 判断用户是否登录
+        User user = (User) session.getAttribute("user");
+        if (user == null){
+            return ServerResponse.defeatedRS(ConstCode.UserEnum.NO_LOGIN.getDesc());
+        }
+
+        return aliPayService.queryOrderPayStatus(user,orderNo);
     }
 }

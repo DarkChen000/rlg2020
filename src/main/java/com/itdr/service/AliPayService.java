@@ -10,4 +10,6 @@ public interface AliPayService {
 
     ServerResponse alipayCallback(Map<String, String> params);
 
+    ServerResponse queryOrderPayStatus(User user, Long orderNo);
+
 }
