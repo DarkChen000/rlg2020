@@ -6,10 +6,7 @@ import com.itdr.config.pay.BizContent;
 import com.itdr.config.pay.Configs;
 import com.itdr.config.pay.PGoodsDetail;
 import com.itdr.pojo.*;
-import com.itdr.pojo.vo.CartProductVO;
-import com.itdr.pojo.vo.CartVO;
-import com.itdr.pojo.vo.ProductVO;
-import com.itdr.pojo.vo.UserVO;
+import com.itdr.pojo.vo.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -187,5 +184,40 @@ public class ObjectToVOUtil {
         biz.setGoods_detail(goodsDetailList);
 
         return biz;
+    }
+
+    /**
+     * 封装商品详情
+     * @param orderItem
+     * @return
+     */
+    public static OrderItemVO orderItemToOrderItemVO(OrderItem orderItem){
+        OrderItemVO orderItemVO = new OrderItemVO();
+        orderItemVO.setOrderNo(orderItem.getOrderNo());
+        orderItemVO.setProductId(orderItem.getProductId());
+        orderItemVO.setProductName(orderItem.getProductName());
+        orderItemVO.setProductImage(orderItem.getProductImage());
+        orderItemVO.setCurrentUnitPrice(orderItem.getCurrentUnitPrice());
+        orderItemVO.setQuantity(orderItem.getQuantity());
+        orderItemVO.setTotalPrice(orderItem.getTotalPrice());
+        return orderItemVO;
+    }
+
+    /**
+     * 封装地址详情
+     * @param shipping
+     * @return
+     */
+    public static ShippingVO shippingToShippingVO(Shipping shipping){
+        ShippingVO shippingVO = new ShippingVO();
+        shippingVO.setReceiverName(shipping.getReceiverName());
+        shippingVO.setReceiverPhone(shipping.getReceiverPhone());
+        shippingVO.setReceiverMobile(shipping.getReceiverMobile());
+        shippingVO.setReceiverCity(shipping.getReceiverCity());
+        shippingVO.setReceiverDistrict(shipping.getReceiverDistrict());
+        shippingVO.setReceiverProvince(shipping.getReceiverProvince());
+        shippingVO.setReceiverAddress(shipping.getReceiverAddress());
+        shippingVO.setReceiverZip(shipping.getReceiverZip());
+        return shippingVO;
     }
 }

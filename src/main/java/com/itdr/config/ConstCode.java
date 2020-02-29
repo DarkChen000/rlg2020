@@ -197,4 +197,39 @@ public class ConstCode {
             this.desc = desc;
         }
     }
+
+    public enum OrderEnum{
+
+        UNLAWFUINESS_PARAM(1, "非法参数"),
+        EMPTY_CART(2,"购物车中没有更多商品"),
+        NO_CHECKED(3,"购物车中没有被选中的商品"),
+        FAID_ORDER(4,"订单创建失败"),
+        FAID_ORDERITEM(5,"订单详情创建失败"),
+        FAID_DELETE(6,"删除失败"),
+        FAIDED_SHIPPING(7,"地址不存在");
+
+        private int code;
+        private String desc;
+
+        private OrderEnum(int code, String desc) {
+            this.code = code;
+            this.desc = desc;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public void setDesc(String desc) {
+            this.desc = desc;
+        }
+    }
 }

@@ -31,7 +31,7 @@ public class CartServiceImpl implements CartService {
     ProductMapper productMapper;
 
     // 获取cartVO
-    private CartVO getCartVO(List<Cart> cartList){
+    protected CartVO getCartVO(List<Cart> cartList){
         // 创建一个存放商品的集合
         List<CartProductVO> cartProductVOList = new ArrayList<>();
 
@@ -326,5 +326,29 @@ public class CartServiceImpl implements CartService {
         // 获取一个封装对象
         CartVO cartVO = getCartVO(cartList.getData());
         return ServerResponse.successRS(cartVO);
+    }
+
+    @Override
+    public ServerResponse toPayFor(User user) {
+        // 判断当前用户购物车中有没有数据
+        List<Cart> cartList = cartMapper.selectByUserID(user.getId());
+        if (cartList.size() == 0){
+            return ServerResponse.defeatedRS
+                    (ConstCode.OrderEnum.EMPTY_CART.getCode(),ConstCode.OrderEnum.EMPTY_CART.getDesc());
+        }
+
+        // 判断购物车中商品是否被选中
+        boolean bol = false;
+        for (Cart cart : cartList) {
+            if (cart.getChecked() == 1){
+                bol = true;
+            }
+        }
+        if (!bol){
+            return ServerResponse.defeatedRS
+                    (ConstCode.OrderEnum.NO_CHECKED.getCode(),ConstCode.OrderEnum.NO_CHECKED.getDesc());
+        }
+
+        return ServerResponse.successRS(true);
     }
 }

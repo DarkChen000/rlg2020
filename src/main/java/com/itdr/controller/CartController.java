@@ -133,4 +133,19 @@ public class CartController {
         }
         return cartsService.checked(productID,type,user);
     }
+
+    /**
+     * 购物车跳转去结算页面
+     * @param session
+     * @return
+     */
+    @RequestMapping("to_pay_for.do")
+    public ServerResponse toPayFor(HttpSession session){
+        // 判断用户是否登录
+        User user = (User) session.getAttribute("user");
+        if (user == null){
+            return ServerResponse.defeatedRS(ConstCode.UserEnum.NO_LOGIN.getDesc());
+        }
+        return cartsService.toPayFor(user);
+    }
 }

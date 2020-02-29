@@ -18,4 +18,6 @@ public interface CartService {
     ServerResponse getCartProductCount(User user);
 
     ServerResponse checked(Integer productID, Integer type,User user);
+
+    ServerResponse toPayFor(User user);
 }

@@ -62,7 +62,7 @@
     where user_id = #{id,jdbcType=INTEGER} and checked = 1
   </delete>
 
-  <insert id="insert" parameterType="com.itdr.pojo.Cart" >
+    <insert id="insert" parameterType="com.itdr.pojo.Cart" >
     insert into neuedu_cart (id, user_id, product_id, 
       quantity, checked, create_time, 
       update_time)
