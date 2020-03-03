@@ -63,7 +63,6 @@ public class ConstCode {
         }
     }
 
-
     public enum ProductEnum{
 
         UNLAWFUINESS_PARAM(1, "非法参数"),
@@ -171,7 +170,14 @@ public class ConstCode {
 
     public enum ShippingEnum{
 
-        EMPTY_ADDRESS(1, "该用户尚未添加收获地址");
+        EMPTY_ADDRESS(1, "该用户尚未添加收获地址"),
+        UNLAWFUINESS_PARAM(2, "非法参数"),
+        FAILED_DELETE(3,"删除地址失败"),
+        SUCCESS_DELETE(4,"删除地址成功"),
+        FAILED_ADD(5,"添加地址失败"),
+        SUCCESS_ADD(6,"添加地址成功"),
+        FAILED_UPDATE(7,"更新地址失败"),
+        SUCCESS_UPDATE(8,"更新地址成功");
 
         private int code;
         private String desc;
@@ -206,7 +212,12 @@ public class ConstCode {
         FAID_ORDER(4,"订单创建失败"),
         FAID_ORDERITEM(5,"订单详情创建失败"),
         FAID_DELETE(6,"删除失败"),
-        FAIDED_SHIPPING(7,"地址不存在");
+        FAIDED_SHIPPING(7,"地址不存在"),
+        FAIDLED_ORDER(8,"订单不存在"),
+        EMPRY_PRODUCT(9,"商品不存在"),
+        NO_STATUS(10,"商品已下架"),
+        OVER_STOCK(11,"超出库存"),
+        NOT_FIND_ORDER(12,"未查询到订单信息");
 
         private int code;
         private String desc;

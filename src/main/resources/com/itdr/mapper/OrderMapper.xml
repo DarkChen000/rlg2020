@@ -43,6 +43,14 @@
       where order_no = #{orderNo,jdbcType=INTEGER}
     </select>
 
+<!--  根据用户id获取用户所有订单-->
+    <select id="selectByUid" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from neuedu_order
+      where user_id = #{uid}
+    </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from neuedu_order
     where id = #{id,jdbcType=INTEGER}
@@ -53,11 +61,11 @@
       postage, status, payment_time, 
       send_time, end_time, close_time, 
       create_time, update_time)
-    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{orderNo,jdbcType=BIGINT}, 
+    values (null , #{userId,jdbcType=INTEGER}, #{orderNo,jdbcType=BIGINT},
       #{shippingId,jdbcType=INTEGER}, #{payment,jdbcType=DECIMAL}, #{paymentType,jdbcType=INTEGER}, 
       #{postage,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{paymentTime,jdbcType=TIMESTAMP}, 
       #{sendTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{closeTime,jdbcType=TIMESTAMP}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+      now(), now())
   </insert>
   <insert id="insertSelective" parameterType="com.itdr.pojo.Order" >
     insert into neuedu_order

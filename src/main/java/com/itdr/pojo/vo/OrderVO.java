@@ -31,6 +31,8 @@ public class OrderVO {
 
     private Date closeTime;
 
+    private Date createTime;
+
     private List<OrderItemVO> orderItemVOList;
 
     private ShippingVO shippingVO;

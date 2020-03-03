@@ -38,6 +38,7 @@
     delete from neuedu_order_item
     where id = #{id,jdbcType=INTEGER}
   </delete>
+
   <insert id="insert" parameterType="com.itdr.pojo.OrderItem" >
     insert into neuedu_order_item (id, user_id, order_no, 
       product_id, product_name, product_image, 
@@ -46,8 +47,9 @@
     values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{orderNo,jdbcType=BIGINT}, 
       #{productId,jdbcType=INTEGER}, #{productName,jdbcType=VARCHAR}, #{productImage,jdbcType=VARCHAR}, 
       #{currentUnitPrice,jdbcType=DECIMAL}, #{quantity,jdbcType=INTEGER}, #{totalPrice,jdbcType=DECIMAL}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+      now(), now())
   </insert>
+
   <insert id="insertSelective" parameterType="com.itdr.pojo.OrderItem" >
     insert into neuedu_order_item
     <trim prefix="(" suffix=")" suffixOverrides="," >

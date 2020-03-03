@@ -19,6 +19,7 @@
     id, user_id, receiver_name, receiver_phone, receiver_mobile, receiver_province, receiver_city, 
     receiver_district, receiver_address, receiver_zip, create_time, update_time
   </sql>
+
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
@@ -39,16 +40,23 @@
     delete from neuedu_shipping
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.itdr.pojo.Shipping" >
+
+<!--  根据用户名和地址id删除地址-->
+    <delete id="deleteByUserIdAndShippingId">
+      delete from neuedu_shipping
+    where id = #{sid} and user_id = #{uid}
+    </delete>
+
+    <insert id="insert" parameterType="com.itdr.pojo.Shipping" >
     insert into neuedu_shipping (id, user_id, receiver_name, 
       receiver_phone, receiver_mobile, receiver_province, 
       receiver_city, receiver_district, receiver_address, 
       receiver_zip, create_time, update_time
       )
-    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{receiverName,jdbcType=VARCHAR}, 
+    values (null , #{userId,jdbcType=INTEGER}, #{receiverName,jdbcType=VARCHAR},
       #{receiverPhone,jdbcType=VARCHAR}, #{receiverMobile,jdbcType=VARCHAR}, #{receiverProvince,jdbcType=VARCHAR}, 
       #{receiverCity,jdbcType=VARCHAR}, #{receiverDistrict,jdbcType=VARCHAR}, #{receiverAddress,jdbcType=VARCHAR}, 
-      #{receiverZip,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      #{receiverZip,jdbcType=VARCHAR}, now(), now()
       )
   </insert>
   <insert id="insertSelective" parameterType="com.itdr.pojo.Shipping" >
@@ -133,39 +141,31 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.itdr.pojo.Shipping" >
     update neuedu_shipping
     <set >
-      <if test="userId != null" >
-        user_id = #{userId,jdbcType=INTEGER},
-      </if>
-      <if test="receiverName != null" >
+      <if test="receiverName != null and receiverName != ''"  >
         receiver_name = #{receiverName,jdbcType=VARCHAR},
       </if>
-      <if test="receiverPhone != null" >
+      <if test="receiverPhone != null and receiverPhone != ''" >
         receiver_phone = #{receiverPhone,jdbcType=VARCHAR},
       </if>
-      <if test="receiverMobile != null" >
+      <if test="receiverMobile != null and receiverMobile != ''" >
         receiver_mobile = #{receiverMobile,jdbcType=VARCHAR},
       </if>
-      <if test="receiverProvince != null" >
+      <if test="receiverProvince != null and receiverProvince != ''" >
         receiver_province = #{receiverProvince,jdbcType=VARCHAR},
       </if>
-      <if test="receiverCity != null" >
+      <if test="receiverCity != null and receiverCity != ''" >
         receiver_city = #{receiverCity,jdbcType=VARCHAR},
       </if>
-      <if test="receiverDistrict != null" >
+      <if test="receiverDistrict != null and receiverDistrict != ''" >
         receiver_district = #{receiverDistrict,jdbcType=VARCHAR},
       </if>
-      <if test="receiverAddress != null" >
+      <if test="receiverAddress != null and receiverAddress != ''" >
         receiver_address = #{receiverAddress,jdbcType=VARCHAR},
       </if>
-      <if test="receiverZip != null" >
+      <if test="receiverZip != null and receiverZip != ''" >
         receiver_zip = #{receiverZip,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+        update_time = now()
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
